@@ -1,16 +1,21 @@
-# Copy this into a file called `docker-compose.yml`
-version: "3"
-
 services:
   cliapp:
-    image: chimera-cliapp 
-    volumes:
-      - chimera:/opt/chimera/data
+    image: chimera-cliapp
+    build:
+      context: .
+      dockerfile: Dockerfile.cliapp
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
   webapp:
     image: chimera-webapp
+    build:
+      context: .
+      dockerfile: Dockerfile.webapp
     ports:
       - "8080:80"
-    volumes:
-      - chimera:/opt/chimera/data
-volumes:
-  chimera:
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+  redis:
+    image: redis:8.0-rc1-alpine
