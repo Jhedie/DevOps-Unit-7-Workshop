@@ -1,4 +1,13 @@
 services:
+  nginx:
+    image: chimera-nginx
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "8000:80"
+    depends_on:
+      - webapp
   cliapp:
     image: chimera-cliapp
     build:
@@ -12,8 +21,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.webapp
-    ports:
-      - "8080:80"
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
