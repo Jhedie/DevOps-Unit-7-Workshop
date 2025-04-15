@@ -11,12 +11,15 @@ RUN chmod +x cliapp
 # RUN mkdir $DATA_FOLDER
 RUN mkdir /var/log/chimera
 
-#REDIS environment variables
-ENV REDIS_HOST=redis
-ENV REDIS_PORT=6379
+RUN apt-get install -y cron
+
+RUN touch /var/log/cron.log
+COPY ./chimera_crontab.txt  /chimera_crontab.txt
+
+RUN crontab /chimera_crontab.txt
 
 # copy run.sh
 COPY ./run.sh ./run.sh
 RUN chmod +x ./run.sh
 
-ENTRYPOINT [ "./run.sh" ]
+ENTRYPOINT ["/bin/bash", "-c", "printenv >> /etc/environment && cron && tail -f /var/log/cron.log"]
